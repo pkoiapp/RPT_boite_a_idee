@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grid CSS - Modèle</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/siimple-icons/siimple-icons.css" />
+</head>
+
+<body>
+  
+  <section>
+    <h1>Groupe de réflexion</h1>
+    <h2>
+      <button class="mainbtn addbtn" id="addTheme" onclick="addTheme()"><i class="si-plus-square"></i> Ajouter Thème</button>
+      <!-- <button class="mainbtn delbtn" id="delTheme" >Supprimer Thème</button> -->
+    </h2>
+    <div class="content" id="content">
+      
+        
+    </div>
+  </div>
+  </section>
+
+  <script type="text/javascript">
+      let idTheme;
+      let dateCreation;
+      function addIdee(idTheme){
+        document.getElementById(idTheme).insertAdjacentHTML("beforeend", 
+          '<div class="Idea" id="'+ Date.now() +'">' +
+            //'<input type="checkbox" style="background-color: white;">' +
+            '<textarea placeholder="Idée ici..." class="IdeaID item"></textarea>' +
+            '<div class="edition">' +
+              '<i class="si-disk" style="color: #333635; font-size: 18px;"></i>' +
+              '<i class="si-info-circle" style="color: #333635; font-size: 18px;"></i>' +
+              '<i class="si-trash" style="color: #333635; font-size: 18px;" onclick="delIdee('+ Date.now() +')"></i>' +
+            '</div>'+
+          '</div>') ;      
+      }
+      function delIdee(idTheme){
+        document.getElementById(idTheme).style.display = 'none';
+      }
+      function addTheme(){
+        idTheme = Date.now()
+        dateCreation = new Date(Date.now())
+        document.getElementById('content').insertAdjacentHTML("beforeend", 
+          '<div class="contentTheme" id="' + idTheme + '"">' +
+            '<div class="Theme">' +
+              //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
+              '<input type="text" placeholder="Thème ici...'+ dateCreation.getMinutes() +'" class="item themeID">' +
+              '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee('+ idTheme +')"><i class="si-plus-circle"></i> Ajouter Idée</button>' +
+              '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme('+ idTheme +')"><i class="si-trash"></i> Supprimer Thème</button>' +
+          '</div>' +
+          '<div class="Idea" id="'+ Date.now() + 1 +'">' +
+            //'<input type="checkbox" style="background-color: white;">' +
+            '<textarea placeholder="Idée ici..." class="IdeaID item"></textarea>' +
+            '<div class="edition">' +
+              '<i class="si-disk" style="color: #333635; font-size: 18px;"></i>' +
+              '<i class="si-info-circle" style="color: #333635; font-size: 18px;"></i>' +
+              '<i class="si-trash" style="color: #333635; font-size: 18px;" onclick="delIdee('+ Date.now() + 1 +')"></i>' +
+            '</div>'+
+          '</div>') ;      
+      }
+
+      function delTheme(idTheme){
+        let text = "Supprimer le thème: " + idTheme ;
+        if (confirm(text) == true) {
+          document.getElementById(idTheme).style.display = 'none';
+        }         
+      }
+
+      window.onload = function() {
+        //console.log('Document HTML prêt 1!');
+        fetch('./bddTheme.json')
+          .then(res=>res.json()
+          .then(json=>{
+            json.map(data=>{
+              console.log(data.themeId, data.themeDate)
+            })
+          })
+        )
+      }
+
+  </script>
+
+</body>
+
+
+
+</html>

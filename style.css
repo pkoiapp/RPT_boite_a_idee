@@ -1,0 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Chivo+Mono:wght@500&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Chivo Mono", monospace;
+}
+
+body{
+  background-color: #DDDDDD;
+}
+
+section {
+  background:#DDDDDD;
+  text-align: center;
+  padding: 26px 10px;
+}
+h1 {
+  margin: 0 0 10px;
+  font-size: 1.7rem;
+}
+h2 {
+  margin: 0 0 10px;
+}
+
+.mainbtn{
+  font-size: 1rem;
+  height: 30px;
+  padding-left: 5%;
+  padding-right: 5%;
+  border-radius: 5px;
+  border: none;
+  background-color:#b1adad;
+  cursor:pointer;
+  opacity: 0.6;
+  transition: 0.3s;
+  color:black;
+}
+
+.subbtn{
+  font-size: 0.8rem;
+  padding: 0.5em 0.5em 1em;
+}
+
+.mainbtn:hover{
+  color: white;
+}
+
+.addbtn:hover, .addIdeabtn:hover {
+  background-color: #3e8e41;
+}
+
+.delbtn:hover, .delIdeabtn:hover {
+  background-color:indianred;
+}
+
+.contentTheme {
+  padding: 2px;
+  margin: 0.5em;
+  background-color: rgb(172, 216, 218);
+  border-style: solid;
+  border-radius: 5px;
+  border-color: rgb(172, 216, 218);
+}
+.contentTheme {
+  margin: 8px;
+  border: 0;
+}
+@media screen and (max-width: 870px) {
+  .content {
+    grid-template-columns: 50% 50%;
+  }
+  .subbtn {
+    display:block;
+  }
+}
+@media screen and (max-width: 540px) {
+  .content {
+    grid-template-columns: 50%;
+  }
+  .subbtn {
+    display: none;
+  }
+}
+
+.Theme, .Idea{
+  align-items: center;
+  align-content: flex-start;
+  display: flex;
+  gap: 0.5em;
+  margin: 8px;
+}
+
+.edition{
+  align-items: center;
+  align-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.si-disk:hover{
+  cursor:pointer;
+  background-color: #3e8e41;
+}
+
+.si-trash:hover{
+  cursor:pointer;
+  background-color: indianred;
+
+}
+
+.item{
+  flex-grow: 1;
+}
+
+.ThemeID{
+  flex-grow: 4;
+}
+
+input {
+  height: 40px;
+}
+input,
+textarea {
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  padding: 0 4px;
+}
+textarea {
+  height: 55px;
+  padding: 8px 4px;
+  resize: none;
+}
+
+input[type="submit"] {
+  background: rgb(80, 223, 248);
+}
