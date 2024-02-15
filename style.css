@@ -96,7 +96,7 @@ h2 {
   align-content: flex-start;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
   margin: 0;
 }
 

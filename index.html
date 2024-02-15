@@ -16,7 +16,7 @@
     <h1>Groupe de réflexion</h1>
     <h2>
       <button class="mainbtn addbtn" id="addTheme" onclick="addTheme()"><i class="si-plus-square"></i> Ajouter Thème</button>
-      <!-- <button class="mainbtn delbtn" id="delTheme" >Supprimer Thème</button> -->
+      <button class="mainbtn delbtn" id="delTheme" onclick="saveTheme(1707918209873)">save</button>
     </h2>
     <div class="content" id="content">
       
@@ -28,21 +28,51 @@
   <script type="text/javascript">
       let idTheme;
       let dateCreation;
+      let f;
+      let bddJSON;
+
       function addIdee(idTheme){
         document.getElementById(idTheme).insertAdjacentHTML("beforeend", 
           '<div class="Idea" id="'+ Date.now() +'">' +
             //'<input type="checkbox" style="background-color: white;">' +
             '<textarea placeholder="Idée ici..." class="IdeaID item"></textarea>' +
             '<div class="edition">' +
-              '<i class="si-disk" style="color: #333635; font-size: 18px;"></i>' +
+              '<i class="si-disk" style="color: #333635; font-size: 18px;" onclick="saveIdee('+ Date.now() +')"></i>' +
               '<i class="si-info-circle" style="color: #333635; font-size: 18px;"></i>' +
               '<i class="si-trash" style="color: #333635; font-size: 18px;" onclick="delIdee('+ Date.now() +')"></i>' +
             '</div>'+
           '</div>') ;      
       }
+
       function delIdee(idTheme){
         document.getElementById(idTheme).style.display = 'none';
       }
+
+      function saveIdee(id){
+         
+        /*f = File.new()
+        f.open("./bddIdea.json", File.WRITE)
+        f.store_string(JSON.print(data, "  ", true))
+        f.close()*/
+
+      }
+
+      function saveTheme(idTheme){
+          //console.log(bddJSON)
+          //console.log(document.getElementById('text'+ idTheme).placeholder)
+          f = File.new()
+          
+          bddJSON.map(data=>{
+            if (data.themeID == idTheme){
+              data.themeContent = document.getElementById('text'+ idTheme).placeholder
+              
+              f.open("./bddTheme.json", File.WRITE)
+              f.store_string(JSON.print(bddJSON, "  ", true))
+              f.close()
+            }
+          })
+      }
+
       function addTheme(){
         idTheme = Date.now()
         dateCreation = new Date(Date.now())
@@ -50,10 +80,10 @@
           '<div class="contentTheme" id="' + idTheme + '"">' +
             '<div class="Theme">' +
               //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
-              '<input type="text" placeholder="Thème ici...'+ dateCreation.getMinutes() +'" class="item themeID">' +
+              '<input type="text" placeholder="Thème ici...'+ dateCreation.getMinutes() +'" id="text'+ idTheme +'" class="item themeID">' +
               '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee('+ idTheme +')"><i class="si-plus-circle"></i> Ajouter Idée</button>' +
               '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme('+ idTheme +')"><i class="si-trash"></i> Supprimer Thème</button>' +
-          '</div>') ;      
+          '</div>') ;         
       }
 
       function delTheme(idTheme){
@@ -68,13 +98,15 @@
         fetch('./bddTheme.json')
           .then(res=>res.json()
           .then(json=>{
+            bddJSON = json
             json.map(data=>{
-              console.log(data.themeId, data.themeDate)
+              //console.log(data.themeId, data.themeDate)
               document.getElementById('content').insertAdjacentHTML("beforeend", 
               '<div class="contentTheme" id="' + data.themeId + '">' +
                 '<div class="Theme">' +
                   //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
-                  '<input type="text" placeholder="' + data.themeContent + '" class="item themeID">' +
+                  //placeholder="' + data.themeContent + '
+                  '<input type="text" " id="text'+ data.themeId +'" class="item themeID" value="' + data.themeContent + '">' +
                   '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee(' + data.themeId + ')"><i class="si-plus-circle"></i> Ajouter Idée</button>' +
                   '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme(' + data.themeId + ')"><i class="si-trash"></i> Supprimer Thème</button>' +
               '</div>') ;
@@ -86,15 +118,15 @@
           .then(res=>res.json()
           .then(json=>{
             json.map(data=>{
-              console.log(data.themeId, data.ideaID, data.ideaContent)
+              //console.log(data.themeId, data.ideaID, data.ideaContent)
               document.getElementById(data.themeId).insertAdjacentHTML("beforeend", 
               '<div class="Idea" id="'+ data.ideaID +'">' +
                 //'<input type="checkbox" style="background-color: white;">' +
-                '<textarea placeholder="'+ data.ideaContent +'" class="IdeaID item"></textarea>' +
+                '<textarea class="IdeaID item">'+ data.ideaContent +'</textarea>' +
                 '<div class="edition">' +
-                  '<i class="si-disk" style="color: #333635; font-size: 18px;"></i>' +
-                  '<i class="si-info-circle" style="color: #333635; font-size: 18px;"></i>' +
-                  '<i class="si-trash" style="color: #333635; font-size: 18px;" onclick="delIdee('+ data.ideaID +')"></i>' +
+                  '<i class="si-disk" style="color: #333635; font-size: 16px;" onclick="saveIdee('+ data.ideaID +')"></i>' +
+                  '<i class="si-info-circle" style="color: #333635; font-size: 16px;"></i>' +
+                  '<i class="si-trash" style="color: #333635; font-size: 16px;" onclick="delIdee('+ data.ideaID +')"></i>' +
                 '</div>'+
               '</div>') ;
             })
