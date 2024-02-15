@@ -16,7 +16,7 @@
     <h1>Groupe de réflexion</h1>
     <h2>
       <button class="mainbtn addbtn" id="addTheme" onclick="addTheme()"><i class="si-plus-square"></i> Ajouter Thème</button>
-      <button class="mainbtn delbtn" id="delTheme" onclick="saveTheme(1707918209873)">save</button>
+      <button class="mainbtn delbtn" id="delTheme" onclick="readSHA()"><i class="si-disk"></i> Enregistrer tout</button>
     </h2>
     <div class="content" id="content">
       
@@ -30,7 +30,31 @@
       let dateCreation;
       let f;
       let bddJSON;
+      let sha; //recuperation du code github
 
+      const monHeader = {
+        headers: {
+            'Accept': 'application/vnd.github+json',
+            'Authorization' : 'Bearer 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',
+            'X-GitHub-Api-Version': '2022-11-28'
+            }
+      }
+
+      function readSHA(){
+
+        fetch('https://api.github.com/repos/pkoiapp/RPT_boite_a_idee/contents/bddTheme.json', {
+          method: 'GET',
+          monHeader
+        })
+        .then(res=>res.json()
+          .then(json=>{
+            sha = json.sha
+            //console.log(sha)
+          })
+        )
+        
+      }
+      
       function addIdee(idTheme){
         document.getElementById(idTheme).insertAdjacentHTML("beforeend", 
           '<div class="Idea" id="'+ Date.now() +'">' +
@@ -55,22 +79,39 @@
         f.store_string(JSON.print(data, "  ", true))
         f.close()*/
 
+
       }
 
       function saveTheme(idTheme){
-          //console.log(bddJSON)
-          //console.log(document.getElementById('text'+ idTheme).placeholder)
-          f = File.new()
           
-          bddJSON.map(data=>{
-            if (data.themeID == idTheme){
-              data.themeContent = document.getElementById('text'+ idTheme).placeholder
-              
-              f.open("./bddTheme.json", File.WRITE)
-              f.store_string(JSON.print(bddJSON, "  ", true))
-              f.close()
+          bddJSON.forEach(element => {
+            if (element.themeId == idTheme){
+              element.themeContent = document.getElementById('text' + idTheme).value
             }
+          });
+
+          console.log(Base64.encode(bddJSON))
+        
+          fetch('https://api.github.com/repos/pkoiapp/RPT_boite_a_idee/contents/bddTheme.json', {
+          method: 'PUT',
+          monHeader,
+          body: {
+                  'message': 'theme modifié',
+                  'committer': {
+                      'name': 'RPT',
+                      'email': 'rpt@github.com'
+                  },
+                  'content': Base64.encode(bddJSON),
+                  'sha': sha
+                }
+        })
+        .then(res=>res.json()
+          .then(json=>{
+            sha = json.sha
+            //console.log(sha)
           })
+        )
+
       }
 
       function addTheme(){
@@ -81,13 +122,14 @@
             '<div class="Theme">' +
               //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
               '<input type="text" placeholder="Thème ici...'+ dateCreation.getMinutes() +'" id="text'+ idTheme +'" class="item themeID">' +
-              '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee('+ idTheme +')"><i class="si-plus-circle"></i> Ajouter Idée</button>' +
-              '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme('+ idTheme +')"><i class="si-trash"></i> Supprimer Thème</button>' +
+              '<button class="mainbtn subbtn saveThemebtn" id="saveTheme" onclick="saveTheme(' + idTheme + ')"><i class="si-disk" style="color: #333635; font-size: 16px;"></i></button>' +
+              '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee('+ idTheme +')"><i class="si-plus-circle" style="color: #333635; font-size: 16px;"></i></button>' +
+              '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme('+ idTheme +')"><i class="si-trash" style="color: #333635; font-size: 16px;"></i></button>' +
           '</div>') ;         
       }
 
       function delTheme(idTheme){
-        let text = "Supprimer le thème: " + idTheme ;
+        let text = "Supprimer le thème: " + document.getElementById('text'+idTheme).value + " ?" ;
         if (confirm(text) == true) {
           document.getElementById(idTheme).style.display = 'none';
         }         
@@ -107,8 +149,9 @@
                   //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
                   //placeholder="' + data.themeContent + '
                   '<input type="text" " id="text'+ data.themeId +'" class="item themeID" value="' + data.themeContent + '">' +
-                  '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee(' + data.themeId + ')"><i class="si-plus-circle"></i> Ajouter Idée</button>' +
-                  '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme(' + data.themeId + ')"><i class="si-trash"></i> Supprimer Thème</button>' +
+                  '<button class="mainbtn subbtn saveThemebtn" id="saveTheme" onclick="saveTheme(' + data.themeId + ')"><i class="si-disk" style="color: #333635; font-size: 16px;"></i></button>' +
+                  '<button class="mainbtn subbtn addIdeabtn" id="addIdea" onclick="addIdee(' + data.themeId + ')"><i class="si-plus-circle" style="color: #333635; font-size: 16px;"></i></button>' +
+                  '<button class="mainbtn subbtn delIdeabtn" id="delTheme" onclick="delTheme(' + data.themeId + ')"><i class="si-trash" style="color: #333635; font-size: 16px;"></i></button>' +
               '</div>') ;
             })
           })
@@ -132,6 +175,9 @@
             })
           })
         )
+        
+        //recuperation code hachage fichier github 
+        readSHA()
       }
 
   </script>

@@ -26,8 +26,8 @@ h2 {
 .mainbtn{
   font-size: 1rem;
   height: 30px;
-  padding-left: 5%;
-  padding-right: 5%;
+  padding-left: 2%;
+  padding-right: 2%;
   border-radius: 5px;
   border: none;
   background-color:#b1adad;
@@ -44,10 +44,15 @@ h2 {
 
 .mainbtn:hover{
   color: white;
+  box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
 }
 
-.addbtn:hover, .addIdeabtn:hover {
+.addbtn:hover, .saveThemebtn:hover {
   background-color: #3e8e41;
+}
+
+.addIdeabtn:hover {
+  background-color: hsl(219, 59%, 65%);
 }
 
 .delbtn:hover, .delIdeabtn:hover {
@@ -58,9 +63,11 @@ h2 {
   padding: 2px;
   margin: 0.5em;
   background-color: rgb(172, 216, 218);
+  background: linear-gradient(rgb(172, 216, 218),rgb(123, 196, 200));
   border-style: solid;
   border-radius: 5px;
   border-color: rgb(172, 216, 218);
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
 }
 .contentTheme {
   margin: 8px;
@@ -108,7 +115,6 @@ h2 {
 .si-trash:hover{
   cursor:pointer;
   background-color: indianred;
-
 }
 
 .item{
