@@ -5,21 +5,24 @@ const octokit = new Octokit({
                 auth: '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'
               })
 
-export function saveThemeOctokit(idTheme){
+document.getElementById("saveAll").addEventListener("click", function() {
+  saveThemeOctokit(idTheme)
+});
+
+export function saveThemeOctokit(){
       
       bddJSON.forEach(element => {
-        if (element.themeId == idTheme){
-          element.themeContent = document.getElementById('text' + idTheme).value
-        }
+        //if (element.themeId == idTheme){
+          element.themeContent = document.getElementById('text' + element.themeId).value
+        //}
       });
-
-      console.log(btoa(bddJSON))
 
     octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner: 'pkoiapp',
       repo: 'RPT_boite_a_idee',
       path: 'bddTheme.json',
       message: 'my commit message',
+      auth: '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',
       committer: {
         name: 'Monalisa Octocat',
         email: 'octocat@github.com'
@@ -31,4 +34,6 @@ export function saveThemeOctokit(idTheme){
       }
     })
 
+
+    console.log(btoa(sha))
 }
