@@ -6,23 +6,26 @@ const octokit = new Octokit({
               })
 
 document.getElementById("saveAll").addEventListener("click", function() {
-  saveThemeOctokit(idTheme)
+  saveThemeOctokit()
 });
 
 export function saveThemeOctokit(){
       
+    console.log(bddJSON)
       bddJSON.forEach(element => {
         //if (element.themeId == idTheme){
           element.themeContent = document.getElementById('text' + element.themeId).value
         //}
       });
 
+      console.log(bddJSON)
+
     octokit.request('PUT /repos/{owner}/{repo}/contents/{path}', {
       owner: 'pkoiapp',
       repo: 'RPT_boite_a_idee',
       path: 'bddTheme.json',
       message: 'my commit message',
-      auth: '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',
+      
       committer: {
         name: 'Monalisa Octocat',
         email: 'octocat@github.com'
@@ -35,5 +38,5 @@ export function saveThemeOctokit(){
     })
 
 
-    console.log(btoa(sha))
+    console.log(sha)
 }
