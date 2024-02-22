@@ -8,8 +8,9 @@
   <title>Grid CSS - Modèle</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/siimple-icons/siimple-icons.css" />
-  <script type="module" src="./github.js"></script>
-  <script type="text/javascript" src="./server.js"></script>
+  <!--<script type="module" src="./github.js"></script>
+  <script type="text/javascript" src="./server.js"></script>-->
+
 </head>
 
 <body>
@@ -17,8 +18,8 @@
   <section>
     <h1>Groupe de réflexion</h1>
     <h2>
-      <button class="mainbtn addbtn" id="addTheme" onclick="addTheme()"><i class="si-plus-square"></i> Ajouter Thème</button>
-      <button class="mainbtn delbtn" id="saveAll"><i class="si-disk"></i> Enregistrer tout</button> <!--onclick="readSHA()"-->
+      <button class="mainbtn addbtn" id="addTheme"><i class="si-plus-square"></i> Ajouter Thème</button>
+      <button class="mainbtn delbtn" id="saveAll" style="display:none;"><i class="si-disk"></i> Enregistrer tout</button> <!--onclick="readSHA()"-->
     </h2>
     <div class="content" id="content">
       
@@ -26,7 +27,261 @@
     </div>
   </div>
 </section>
+
+<script type="module" >
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  //import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCfqDFalf3Lb2jeengFPB3yMxx578FliQM",
+    authDomain: "rpt-boite-a-idee.firebaseapp.com",
+    databaseURL: "https://rpt-boite-a-idee-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "rpt-boite-a-idee",
+    storageBucket: "rpt-boite-a-idee.appspot.com",
+    messagingSenderId: "345495728712",
+    appId: "1:345495728712:web:25f890626a03499f1e5e7d",
+    measurementId: "G-SY2FW7HN8Y"
+  };
+
+  let idTheme;
+  let idIdea;
+  let dateCreation;
+  let f;
+  let bddJSON;
+
+  const app = initializeApp(firebaseConfig);
+ // const analytics = getAnalytics(app);
+
+  import { getDatabase, ref, child, get, set, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+  const db = getDatabase()
+  const dbRef  =ref(db)
+
+  function getAllData(){
+
+      //màj des themes
+      get(child(dbRef,'theme')).then((snapshot)=>{
+          var themes=[]  
+          snapshot.forEach(childSnapshot=>{
+            themes.push(childSnapshot.val())
+        })
+
+        themes.forEach(data=>{
+            document.getElementById('content').insertAdjacentHTML("beforeend", 
+              '<div class="contentTheme" id="' + data.themeId + '">' +
+                '<div class="Theme">' +
+                  //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
+                  //placeholder="' + data.themeContent + '
+                  '<input type="text" " id="text_T'+ data.themeId +'" class="item themeID" value="' + data.themeContent + '">' +
+                  '<button class="mainbtn subbtn saveThemebtn" id="_sav_T'+ data.themeId+'"><i class="si-disk" id="isav_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
+                  '<button class="mainbtn subbtn addIdeabtn" id="_add_I'+ data.themeId +'"><i class="si-plus-circle" id="iadd_I'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
+                  '<button class="mainbtn subbtn delIdeabtn" id="_del_T'+ data.themeId +'"><i class="si-trash" id="idel_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
+              '</div>') ;
+          })
+        
+      })
+
+      //màj des idées
+      get(child(dbRef,'idee')).then((snapshot)=>{
+          var idees=[]  
+          snapshot.forEach(childSnapshot=>{
+            idees.push(childSnapshot.val())
+        })
+        idees.forEach(data=>{
+          if (data.ideaStatus == 1){ //etat supprimé ou non (conservé dans l'historique pour plus tard)
+            document.getElementById(data.themeId).insertAdjacentHTML("beforeend", 
+                '<div class="Idea" id="'+ data.ideaID +'">' +
+                  //'<input type="checkbox" style="background-color: white;">' +
+                  '<textarea class="IdeaID item" id="text_I'+ data.ideaID +'">'+ data.ideaContent +'</textarea>' +
+                  '<div class="edition">' +
+                    '<i class="si-disk" id="isav_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-info-circle" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-trash" id="idel_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"></i>' +
+                  '</div>'+
+                '</div>') ;
+              }
+            })
+        
+      })
+
+  }
+
+    function addTheme(){
+      idTheme = Date.now()
+      dateCreation = new Date(Date.now())
+      document.getElementById('content').insertAdjacentHTML("beforeend", 
+        '<div class="contentTheme" id="' + idTheme + '">' +
+          '<div class="Theme">' +
+            //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
+            '<input type="text" placeholder="Thème ici..." id="text_T'+ idTheme +'" class="item themeID">' +
+            '<button class="mainbtn subbtn saveThemebtn" id="_sav_T'+ idTheme +'"><i class="si-disk" id="isav_T'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
+            '<button class="mainbtn subbtn addIdeabtn" id="_add_I'+ idTheme +'"><i class="si-plus-circle" id="iadd_I'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
+            '<button class="mainbtn subbtn delIdeabtn" id="_del_T'+ idTheme +'"><i class="si-trash" id="idel_T'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
+        '</div>') ;
+      
+      set(ref(db,'theme/'+idTheme),{
+          themeId: idTheme,
+          themeContent:'titre du thème - créé le: ' + dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
+          themeDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear()
+      })
+      .then(()=>{
+        //alert("maj correcte")
+      })
+      .catch((error)=>{
+        alert("erreur enregistrement")
+        console.log(error)
+      })
+    }
+
+    function addIdee(idTheme){
+      idIdea = Date.now()
+      dateCreation = new Date(Date.now())
+      document.getElementById(idTheme).insertAdjacentHTML("beforeend", 
+                '<div class="Idea" id="'+ idIdea +'">' +
+                  //'<input type="checkbox" style="background-color: white;">' +
+                  '<textarea class="IdeaID item" id="text_I'+ idIdea +'">Mon idée...</textarea>' +
+                  '<div class="edition">' +
+                    '<i class="si-disk" id="isav_I'+ idIdea +'" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-info-circle" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-trash" id="idel_I'+ idIdea +'" style="color: #333635; font-size: 16px;"></i>' +
+                  '</div>'+
+                '</div>') ;
+
+      set(ref(db,'idee/'+idIdea),{
+          ideaID: idIdea,
+          themeId: idTheme,
+          ideaContent:'idée - créée le: ' + dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
+          ideaDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
+          ideaStatus: 1
+        })
+        .then(()=>{
+          //alert("maj correcte")
+        })
+        .catch((error)=>{
+          alert("erreur enregistrement")
+          console.log(error)
+        })        
+      }
+
+    function saveTheme(id){
+      dateCreation = new Date(Date.now())
+      console.log('text_T'+ id)
+      update(ref(db,'theme/'+id),{
+          //themeId: id,
+          themeContent: document.getElementById('text_T'+ id).value,
+          themeDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear()
+      })
+      .then(()=>{
+        //alert("maj correcte")
+      })
+      .catch((error)=>{
+        alert("erreur enregistrement")
+        console.log(error)
+      })
+
+    }
+
+    function saveIdee(id){
+      dateCreation = new Date(Date.now())
+      update(ref(db,'idee/'+id),{
+          //ideaID: idIdea,
+          //themeId: idTheme,
+          ideaContent:document.getElementById('text_I'+ id).value,
+          ideaDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
+          //ideaStatus: 1
+        })
+        .then(()=>{
+          //alert("maj correcte")
+        })
+        .catch((error)=>{
+          alert("erreur enregistrement")
+          console.log(error)
+        })        
+    }
+
+
+    function delTheme(id){
+      
+      let text = "Supprimer le thème: " + document.getElementById('text_T'+id).value + " ?" ;
+      if (confirm(text) == true) {
+        document.getElementById(id).style.display = 'none';
+      }         
+      remove(ref(db,'theme/'+id))
+      .then(()=>{
+        //alert("maj correcte")
+      })
+      .catch((error)=>{
+        alert("erreur suppression")
+        console.log(error)
+      })
+
+      get(child(dbRef,'idee')).then((snapshot)=>{
+        snapshot.forEach(function(childSnapshot) {
+            if (childSnapshot.val().themeId === id) {
+                remove(ref(db,'idee/'+childSnapshot.val().ideaID))
+                .then(()=>{
+                  //alert("maj correcte")
+                })
+                .catch((error)=>{
+                  alert("erreur suppression")
+                  console.log(error)
+                })
+              }
+        });
+});
+
+    }
+
+    function delIdee(id){
+      let text = "Supprimer l'idée: " + document.getElementById('text_I'+id).value + " ?" ;
+      if (confirm(text) == true) {
+        document.getElementById(id).style.display = 'none';
+      }
+      remove(ref(db,'idee/'+id))
+      .then(()=>{
+        //alert("maj correcte")
+      })
+      .catch((error)=>{
+        alert("erreur suppression")
+        console.log(error)
+      })
+    }
   
+  window.onload = function() {
+    getAllData()
+
+  }
+
+ document.getElementById('addTheme').addEventListener('click', addTheme);
+
+ document.addEventListener('click', function(e) {
+    var idDeLElementClique = e.target.id;
+
+    console.log(idDeLElementClique);
+
+    if (idDeLElementClique.includes('del_T')){ //thème
+        delTheme(idDeLElementClique.substring(6))
+    }
+
+    if (idDeLElementClique.includes('del_I')){ //idée
+        delIdee(idDeLElementClique.substring(6))
+    }
+
+    if (idDeLElementClique.includes('add_I')){ //idée
+        addIdee(idDeLElementClique.substring(6))
+    }
+
+    if (idDeLElementClique.includes('sav_T')){ //thème
+        saveTheme(idDeLElementClique.substring(6))
+    }
+
+    if (idDeLElementClique.includes('sav_I')){ //thème
+        saveIdee(idDeLElementClique.substring(6))
+    }
+
+  });
+  
+</script>
+
 
 </body>
 
