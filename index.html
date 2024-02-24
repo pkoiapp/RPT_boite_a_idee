@@ -17,13 +17,13 @@
   
   <section>
     <h1>Réflexions - thématiques</h1>
-    <h2>
+    <h2 >
       <button class="mainbtn addbtn" id="addTheme"><i class="si-plus-square"></i> Ajouter Thème</button>
-      <button class="mainbtn delbtn" id="saveAll" style="display:none;"><i class="si-disk"></i> Enregistrer tout</button> <!--onclick="readSHA()"-->
+      <button class="mainbtn delbtn" id="saveAll" style="display:none;"><i class="si-disk"></i> Enregistrer tout</button>
     </h2>
     <div class="content" id="content">
       
-        
+
     </div>
   </div>
 </section>
@@ -48,6 +48,7 @@
   let dateCreation;
   let f;
   let bddJSON;
+  let text; //message demande confirmation
 
   const app = initializeApp(firebaseConfig);
  // const analytics = getAnalytics(app);
@@ -72,9 +73,9 @@
                   //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
                   //placeholder="' + data.themeContent + '
                   '<input type="text" " id="text_T'+ data.themeId +'" class="item themeID" value="' + data.themeContent + '">' +
-                  '<button class="mainbtn subbtn saveThemebtn" id="_sav_T'+ data.themeId+'"><i class="si-disk" id="isav_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
-                  '<button class="mainbtn subbtn addIdeabtn" id="_add_I'+ data.themeId +'"><i class="si-plus-circle" id="iadd_I'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
-                  '<button class="mainbtn subbtn delIdeabtn" id="_del_T'+ data.themeId +'"><i class="si-trash" id="idel_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"></i></button>' +
+                  '<button class="mainbtn subbtn saveThemebtn tooltip" id="_sav_T'+ data.themeId+'"><i class="si-disk" id="isav_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Enregistrer thème + idées</span></i></button>' +
+                  '<button class="mainbtn subbtn addIdeabtn tooltip" id="_add_I'+ data.themeId +'"><i class="si-plus-circle" id="iadd_I'+ data.themeId +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Ajouter idée</span></i></button>' +
+                  '<button class="mainbtn subbtn delIdeabtn tooltip" id="_del_T'+ data.themeId +'"><i class="si-trash" id="idel_T'+ data.themeId +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Supprimer thème</span></i></button>' +
               '</div>') ;
           })
         
@@ -93,9 +94,9 @@
                   //'<input type="checkbox" style="background-color: white;">' +
                   '<textarea class="IdeaID item" id="text_I'+ data.ideaID +'">'+ data.ideaContent +'</textarea>' +
                   '<div class="edition">' +
-                    '<i class="si-disk" id="isav_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"></i>' +
-                    '<i class="si-info-circle" style="color: #333635; font-size: 16px;"></i>' +
-                    '<i class="si-trash" id="idel_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-disk tooltip" id="isav_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Enregistrer idée</span></i>' +
+                    '<i class="si-info-circle tooltip" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Informations</span></i>' +
+                    '<i class="si-trash tooltip" id="idel_I'+ data.ideaID +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Supprimer idée</span></i>' +
                   '</div>'+
                 '</div>') ;
               }
@@ -113,9 +114,9 @@
           '<div class="Theme">' +
             //'<input type="checkbox" id="checkThemeID" style="background-color: white;">' +
             '<input type="text" placeholder="Thème ici..." id="text_T'+ idTheme +'" class="item themeID">' +
-            '<button class="mainbtn subbtn saveThemebtn" id="_sav_T'+ idTheme +'"><i class="si-disk" id="isav_T'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
-            '<button class="mainbtn subbtn addIdeabtn" id="_add_I'+ idTheme +'"><i class="si-plus-circle" id="iadd_I'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
-            '<button class="mainbtn subbtn delIdeabtn" id="_del_T'+ idTheme +'"><i class="si-trash" id="idel_T'+ idTheme +'" style="color: #333635; font-size: 16px;"></i></button>' +
+            '<button class="mainbtn subbtn saveThemebtn tooltip" id="_sav_T'+ idTheme +'"><i class="si-disk" id="isav_T'+ idTheme +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Enregistrer thème + idée</span></i></button>' +
+            '<button class="mainbtn subbtn addIdeabtn tooltip" id="_add_I'+ idTheme +'"><i class="si-plus-circle" id="iadd_I'+ idTheme +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Ajouter idée</span></i></button>' +
+            '<button class="mainbtn subbtn delIdeabtn tooltip" id="_del_T'+ idTheme +'"><i class="si-trash" id="idel_T'+ idTheme +'" style="color: #333635; font-size: 16px;"></i><span class="tooltiptext">Supprimer</span></button>' +
         '</div>') ;
       
       set(ref(db,'theme/'+idTheme),{
@@ -140,9 +141,9 @@
                   //'<input type="checkbox" style="background-color: white;">' +
                   '<textarea class="IdeaID item" id="text_I'+ idIdea +'">Mon idée...</textarea>' +
                   '<div class="edition">' +
-                    '<i class="si-disk" id="isav_I'+ idIdea +'" style="color: #333635; font-size: 16px;"></i>' +
-                    '<i class="si-info-circle" style="color: #333635; font-size: 16px;"></i>' +
-                    '<i class="si-trash" id="idel_I'+ idIdea +'" style="color: #333635; font-size: 16px;"></i>' +
+                    '<i class="si-disk tooltip" id="isav_I'+ idIdea +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Enregistrer idée</span></i>' +
+                    '<i class="si-info-circle tooltip" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Informations</span></i>' +
+                    '<i class="si-trash tooltip" id="idel_I'+ idIdea +'" style="color: #333635; font-size: 16px;"><span class="tooltiptext">Supprimer idée</span></i>' +
                   '</div>'+
                 '</div>') ;
 
@@ -163,31 +164,14 @@
       }
 
     function saveTheme(id){
-      dateCreation = new Date(Date.now())
-      console.log('text_T'+ id)
-      update(ref(db,'theme/'+id),{
-          //themeId: id,
-          themeContent: document.getElementById('text_T'+ id).value,
-          themeDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear()
-      })
-      .then(()=>{
-        //alert("maj correcte")
-      })
-      .catch((error)=>{
-        alert("erreur enregistrement")
-        console.log(error)
-      })
-
-    }
-
-    function saveIdee(id){
-      dateCreation = new Date(Date.now())
-      update(ref(db,'idee/'+id),{
-          //ideaID: idIdea,
-          //themeId: idTheme,
-          ideaContent:document.getElementById('text_I'+ id).value,
-          ideaDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
-          //ideaStatus: 1
+      text = "Enregistrer le thème?" ;
+      if (confirm(text) == true) {
+        dateCreation = new Date(Date.now())
+        console.log('text_T'+ id)
+        update(ref(db,'theme/'+id),{
+            //themeId: id,
+            themeContent: document.getElementById('text_T'+ id).value,
+            themeDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear()
         })
         .then(()=>{
           //alert("maj correcte")
@@ -195,55 +179,78 @@
         .catch((error)=>{
           alert("erreur enregistrement")
           console.log(error)
-        })        
+        })
+      }
+    }
+
+    function saveIdee(id){
+      text = "Enregistrer l'idée?" ;
+      if (confirm(text) == true) {
+        dateCreation = new Date(Date.now())
+        update(ref(db,'idee/'+id),{
+            //ideaID: idIdea,
+            //themeId: idTheme,
+            ideaContent:document.getElementById('text_I'+ id).value,
+            ideaDate: dateCreation.getDate() + '/' + (dateCreation.getMonth() + 1) + '/' + dateCreation.getFullYear(),
+            //ideaStatus: 1
+          })
+          .then(()=>{
+            //alert("maj correcte")
+          })
+          .catch((error)=>{
+            alert("erreur enregistrement")
+            console.log(error)
+          }) 
+      }       
     }
 
 
     function delTheme(id){
       
-      let text = "Supprimer le thème: " + document.getElementById('text_T'+id).value + " ?" ;
+      text = "Supprimer le thème: " + document.getElementById('text_T'+id).value + " ?" ;
       if (confirm(text) == true) {
         document.getElementById(id).style.display = 'none';
-      }         
-      remove(ref(db,'theme/'+id))
-      .then(()=>{
-        //alert("maj correcte")
-      })
-      .catch((error)=>{
-        alert("erreur suppression")
-        console.log(error)
-      })
 
-      get(child(dbRef,'idee')).then((snapshot)=>{
-        snapshot.forEach(function(childSnapshot) {
-            if (childSnapshot.val().themeId === id) {
-                remove(ref(db,'idee/'+childSnapshot.val().ideaID))
-                .then(()=>{
-                  //alert("maj correcte")
-                })
-                .catch((error)=>{
-                  alert("erreur suppression")
-                  console.log(error)
-                })
-              }
+        remove(ref(db,'theme/'+id))
+        .then(()=>{
+          //alert("maj correcte")
+        })
+        .catch((error)=>{
+          alert("erreur suppression")
+          console.log(error)
+        })
+
+        get(child(dbRef,'idee')).then((snapshot)=>{
+          snapshot.forEach(function(childSnapshot) {
+              if (childSnapshot.val().themeId === id) {
+                  remove(ref(db,'idee/'+childSnapshot.val().ideaID))
+                  .then(()=>{
+                    //alert("maj correcte")
+                  })
+                  .catch((error)=>{
+                    alert("erreur suppression")
+                    console.log(error)
+                  })
+                }
+          });
         });
-});
-
+      }
     }
 
     function delIdee(id){
-      let text = "Supprimer l'idée: " + document.getElementById('text_I'+id).value + " ?" ;
+      text = "Supprimer l'idée: " + document.getElementById('text_I'+id).value + " ?" ;
       if (confirm(text) == true) {
         document.getElementById(id).style.display = 'none';
+      
+        remove(ref(db,'idee/'+id))
+        .then(()=>{
+          //alert("maj correcte")
+        })
+        .catch((error)=>{
+          alert("erreur suppression")
+          console.log(error)
+        })
       }
-      remove(ref(db,'idee/'+id))
-      .then(()=>{
-        //alert("maj correcte")
-      })
-      .catch((error)=>{
-        alert("erreur suppression")
-        console.log(error)
-      })
     }
   
   window.onload = function() {
