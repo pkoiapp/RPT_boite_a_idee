@@ -103,7 +103,7 @@ h2 {
   padding: 2px;
   margin: 0.5em;
   background-color: rgb(172, 216, 218);
-  background: linear-gradient(rgb(172, 216, 218),rgb(123, 196, 200));
+  background: linear-gradient(90deg, #6DEBE6 0%,#39D5CE 10%,#00AAA6 40%,#067977 60%); /*linear-gradient(rgb(172, 216, 218),rgb(123, 196, 200));*/
   border-style: solid;
   border-radius: 5px;
   border-color: rgb(172, 216, 218);
